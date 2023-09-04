@@ -1,5 +1,7 @@
 name: Deploy to AWS
 
+run-name: Deploy to AWS
+
 on:
   push:
     branches:
@@ -11,12 +13,13 @@ env:
   AWS_DEFAULT_REGION: "ap-southeast-1"
   ASG_NAME: flask-app
   DOCKER_HUB_REPO: integrity11/my_blog_app
-  LAUNCH_TEMPLATE: web_app_template 
+  LAUNCH_TEMPLATE: web_app 
   TAG: latest
 
 
 jobs:
   build:
+    name: "Build"
     runs-on: ubuntu-latest
     steps:
       -
@@ -41,6 +44,8 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB }}/my_blog_app:latest
 
   deploy:
+    name: Deploy 
+    needs: build 
     runs-on: ubuntu-latest
     steps:
       
@@ -49,7 +54,7 @@ jobs:
           echo "---- BEGIN SCALING ---------"
           echo "ASG_NAME = "flask-app" "
           echo "DOCKER_HUB_REPO = "integrity11/my_blog_app" "
-          echo "LAUNCH_TEMPLATE = "web_app_template" " 
+          echo "LAUNCH_TEMPLATE = "web_app" " 
           echo "TAG = "latest" "
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
