@@ -47,6 +47,10 @@ jobs:
       - name: Update Auto Scaling Group with Launch Template
         run: |
           echo "---- BEGIN SCALING ---------"
+          ASG_NAME: flask-app
+          DOCKER_HUB_REPO: integrity11/my_blog_app
+          LAUNCH_TEMPLATE: web_app_template 
+          TAG: latest
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
             --launch-template-name $LAUNCH_TEMPLATE \
