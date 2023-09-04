@@ -1,1 +1,65 @@
-New workflow
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: "ap-southeast-1"
+  ASG_NAME: flask-app
+  DOCKER_HUB_REPO: integrity11/my_blog_app
+  LAUNCH_TEMPLATE: web_app_template 
+  TAG: latest
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB  }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB }}/my_blog_app:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Update Auto Scaling Group with Launch Template
+        run: |
+          echo "---- BEGIN SCALING ---------"
+          # Create a new version of the Launch Template with the updated image
+          NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
+            --launch-template-name $LAUNCH_TEMPLATE \
+            --source-version $LAUNCH_TEMPLATE \
+            --version-description "Updated image to $DOCKER_HUB_REPO:$TAG" \
+            --overrides "ImageId=$(docker pull $DOCKER_HUB_REPO:$TAG)" \
+            --query "LaunchTemplateVersion.VersionNumber" --output text)
+
+          # Update the ASG to use the new Launch Template version
+          aws autoscaling update-auto-scaling-group \
+            --auto-scaling-group-name $ASG_NAME \
+            --launch-template "LaunchTemplateName=$LAUNCH_TEMPLATE,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
+  
+
+
+      
