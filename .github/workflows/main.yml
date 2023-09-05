@@ -76,7 +76,7 @@ jobs:
           echo $encoded_script
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
-            --launch-template-name LAUNCH_TEMPLATE \
+            --launch-template-name web_app_template \
             --launch-template-data '{"UserData":"$encoded_script"}' \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
