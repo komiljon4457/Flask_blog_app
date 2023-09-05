@@ -72,9 +72,6 @@ jobs:
           echo "DOCKER_HUB_REPO = "integrity11/my_blog_app" "
           echo "LAUNCH_TEMPLATE = "web_app_template" "
           echo "TAG = "latest" "
-          encoded_script=$(base64 -i user_data_script.txt)
-          echo $encoded_script
-          decode=$(base64 -d $encoded_script)
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
             --launch-template-name web_app_template \
