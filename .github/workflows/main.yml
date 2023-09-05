@@ -68,8 +68,8 @@ jobs:
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
             --launch-template-name LAUNCH_TEMPLATE \
+            --launch-template-data UserData file://user_data_script.txt \
             --source-version 1 \
-            --user-data user_data_script.txt
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
           # Update the ASG to use the new Launch Template version
