@@ -48,6 +48,8 @@ jobs:
     needs: build 
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout 
+        uses: actions/checkout@v3  
       
       - name: Update Auto Scaling Group with Launch Template
         run: |
@@ -58,10 +60,9 @@ jobs:
           echo "TAG = "latest" "
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
-            --launch-template-name $LAUNCH_TEMPLATE \
-            --source-version $LAUNCH_TEMPLATE \
-            --version-description "Updated image to $DOCKER_HUB_REPO:$TAG" \
-            --overrides "ImageId=$(docker pull $DOCKER_HUB_REPO:$TAG)" \
+            --launch-template-name LAUNCH_TEMPLATE \
+            --source-version 1 \
+            --user-data user_data_script.txt
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
           # Update the ASG to use the new Launch Template version
