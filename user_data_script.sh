@@ -1,17 +1,10 @@
 #cloud-boothook
 #!/bin/bash
-# Install Docker (if not already installed)
-if ! command -v docker &> /dev/null; then
-    echo "Docker is not installed. Installing..."
-    apt update && apt upgrade
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-fi
-
-# Pull the latest Docker image
+echo "Docker is not installed. Installing..."
+apt update && apt upgrade
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
 sudo docker pull integrity11/my_blog_app:latest
-
-# Run the Docker container (replace with your specific run command)
 sudo docker run --rm integrity11/my_blog_app:latest
 
-# Additional user data commands as needed
+
