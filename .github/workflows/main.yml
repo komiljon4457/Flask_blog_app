@@ -68,7 +68,7 @@ jobs:
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
             --launch-template-name LAUNCH_TEMPLATE \
-            --launch-template-data UserData "echo "it is good" \
+            --launch-template-data UserData 'echo hi' \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
