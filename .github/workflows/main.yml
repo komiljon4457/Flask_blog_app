@@ -76,16 +76,16 @@ jobs:
           echo $encoded_script
           decode=$(base64 -d $encoded_script)
           # Create a new version of the Launch Template with the updated image
-          NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
+          NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
             --launch-template-name web_app_template \
-            --launch-template-data '{"UserData":"$decode"}' \
+            --launch-template-data '{"UserData":"IyEvYmluL2Jhc2gKCiMgSW5zdGFsbCBEb2NrZXIgKGlmIG5vdCBhbHJlYWR5IGluc3RhbGxlZCkKaWYgISBjb21tYW5kIC12IGRvY2tlciAmPiAvZGV2L251bGw7IHRoZW4KICAgIGVjaG8gIkRvY2tlciBpcyBub3QgaW5zdGFsbGVkLiBJbnN0YWxsaW5nLi4uIgogICAgc3VkbyB5dW0gaW5zdGFsbCAteSBkb2NrZXIKICAgIHN1ZG8gc2VydmljZSBkb2NrZXIgc3RhcnQKZmkKCiMgUHVsbCB0aGUgbGF0ZXN0IERvY2tlciBpbWFnZQpkb2NrZXIgcHVsbCBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDpsYXRlc3QKCiMgUnVuIHRoZSBEb2NrZXIgY29udGFpbmVyIChyZXBsYWNlIHdpdGggeW91ciBzcGVjaWZpYyBydW4gY29tbWFuZCkKZG9ja2VyIHJ1biAtZCAtcCA4MDo4MCBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDpsYXRlc3QKCiMgQWRkaXRpb25hbCB1c2VyIGRhdGEgY29tbWFuZHMgYXMgbmVlZGVkCg=="}' \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
           # Update the ASG to use the new Launch Template version
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name $ASG_NAME \
-            --launch-template "LaunchTemplateName=$LAUNCH_TEMPLATE,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
+            --launch-template "LaunchTemplateName=web_app_template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
   
 
 
