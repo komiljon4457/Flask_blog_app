@@ -11,6 +11,6 @@ fi
 docker pull integrity11/my_blog_app:latest
 
 # Run the Docker container (replace with your specific run command)
-docker run -d -p 80:80 integrity11/my_blog_app:latest
+docker run --rm integrity11/my_blog_app:latest
 
 # Additional user data commands as needed
