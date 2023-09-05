@@ -73,10 +73,11 @@ jobs:
           echo "LAUNCH_TEMPLATE = "web_app" " 
           echo "TAG = "latest" "
           encoded_script=$(base64 -i user_data_script.txt)
+          echo $encoded_script
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE=$(aws ec2 create-launch-template-version \
             --launch-template-name LAUNCH_TEMPLATE \
-            --launch-template-data UserData '{"UserData":"$encoded_script"}' \
+            --launch-template-data '{"UserData":"$encoded_script"}' \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
