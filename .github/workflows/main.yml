@@ -41,7 +41,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB }}/my_blog_app:latest
+          tags: ${{ secrets.DOCKER_HUB }}/my_blog_app:v1
 
   deploy:
     name: Deploy 
@@ -75,14 +75,15 @@ jobs:
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
             --launch-template-name web_app_template \
-            --launch-template-data '{"UserData":"I2Nsb3VkLWJvb3Rob29rCiMhL2Jpbi9iYXNoCiMgSW5zdGFsbCBEb2NrZXIgKGlmIG5vdCBhbHJlYWR5IGluc3RhbGxlZCkKaWYgISBjb21tYW5kIC12IGRvY2tlciAmPiAvZGV2L251bGw7IHRoZW4KICAgIGVjaG8gIkRvY2tlciBpcyBub3QgaW5zdGFsbGVkLiBJbnN0YWxsaW5nLi4uIgogICAgYXB0IHVwZGF0ZSAmJiBhcHQgdXBncmFkZQogICAgY3VybCAtZnNTTCBodHRwczovL2dldC5kb2NrZXIuY29tIC1vIGdldC1kb2NrZXIuc2gKICAgIHNoIGdldC1kb2NrZXIuc2gKZmkKCiMgUHVsbCB0aGUgbGF0ZXN0IERvY2tlciBpbWFnZQpzdWRvIGRvY2tlciBwdWxsIGludGVncml0eTExL215X2Jsb2dfYXBwOmxhdGVzdAoKIyBSdW4gdGhlIERvY2tlciBjb250YWluZXIgKHJlcGxhY2Ugd2l0aCB5b3VyIHNwZWNpZmljIHJ1biBjb21tYW5kKQpzdWRvIGRvY2tlciBydW4gLS1ybSBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDpsYXRlc3QKCiMgQWRkaXRpb25hbCB1c2VyIGRhdGEgY29tbWFuZHMgYXMgbmVlZGVkCg=="}' \
+            --launch-template-data '{"UserData":"I2Nsb3VkLWJvb3Rob29rCiMhL2Jpbi9iYXNoCmVjaG8gIkRvY2tlciBpcyBub3QgaW5zdGFsbGVkLiBJbnN0YWxsaW5nLi4uIgphcHQgdXBkYXRlICYmIGFwdCB1cGdyYWRlCmN1cmwgLWZzU0wgaHR0cHM6Ly9nZXQuZG9ja2VyLmNvbSAtbyBnZXQtZG9ja2VyLnNoCnNoIGdldC1kb2NrZXIuc2gKc3VkbyBkb2NrZXIgcHVsbCBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDp2MQpzdWRvIGRvY2tlciBydW4gLS1ybSBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDp2MQoKCg=="}' \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
           # Update the ASG to use the new Launch Template version
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name $ASG_NAME \
-            --launch-template "LaunchTemplateName=web_app_template,Version=15"
+            --desired-capacity 2
+            --launch-template "LaunchTemplateName=web_app_template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
   
 
 
