@@ -82,7 +82,7 @@ jobs:
           # Update the ASG to use the new Launch Template version
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name $ASG_NAME \
-            --desired-capacity 2
+            --desired-capacity 2 \
             --launch-template "LaunchTemplateName=web_app_template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
   
 
