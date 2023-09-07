@@ -75,7 +75,7 @@ jobs:
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
             --launch-template-name template-flask \
-            --launch-template-data '{"UserData":"I2Nsb3VkLWJvb3Rob29rCiMhL2Jpbi9iYXNoCmVjaG8gIkRvY2tlciBpcyBub3QgaW5zdGFsbGVkLiBJbnN0YWxsaW5nLi4uIgphcHQgdXBkYXRlICYmIGFwdCB1cGdyYWRlCmN1cmwgLWZzU0wgaHR0cHM6Ly9nZXQuZG9ja2VyLmNvbSAtbyBnZXQtZG9ja2VyLnNoCnNoIGdldC1kb2NrZXIuc2gKc3VkbyBkb2NrZXIgcnVuIC1kIC1wIDgwOjgwICBpbnRlZ3JpdHkxMS9teV9mbGFza19hcHA6djMKCgo="}' \
+            --launch-template-data '{"UserData":"IyEvYmluL2Jhc2gKZWNobyAiRG9ja2VyIGlzIG5vdCBpbnN0YWxsZWQuIEluc3RhbGxpbmcuLi4iCnl1bSB1cGRhdGUgLXkKeXVtIGluc3RhbGwgZG9ja2VyCnNlcnZpY2UgZG9ja2VyIHN0YXJ0CnVzZXJtb2QgLWEgLUcgZG9ja2VyIGVjMi11c2VyCnN1ZG8gZG9ja2VyIHJ1biAtZCAtcCA4MDo4MCAgaW50ZWdyaXR5MTEvbXlfZmxhc2tfYXBwOnYzCgoK"}' \
             --source-version 2 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
