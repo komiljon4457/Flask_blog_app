@@ -11,8 +11,8 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "ap-southeast-1"
-  ASG_NAME: flask-app
-  DOCKER_HUB_REPO: integrity11/my_blog_app
+  ASG_NAME: asg-flask
+  DOCKER_HUB_REPO: integrity11/my_flask_app
   LAUNCH_TEMPLATE: web_app 
   TAG: latest
 
@@ -41,7 +41,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB }}/my_blog_app:v1
+          tags: ${{ secrets.DOCKER_HUB }}/my_flask_app:v3
 
   deploy:
     name: Deploy 
@@ -74,16 +74,16 @@ jobs:
           echo "TAG = "latest" "
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
-            --launch-template-name web_app_template \
-            --launch-template-data '{"UserData":"I2Nsb3VkLWJvb3Rob29rCiMhL2Jpbi9iYXNoCmVjaG8gIkRvY2tlciBpcyBub3QgaW5zdGFsbGVkLiBJbnN0YWxsaW5nLi4uIgphcHQgdXBkYXRlICYmIGFwdCB1cGdyYWRlCmN1cmwgLWZzU0wgaHR0cHM6Ly9nZXQuZG9ja2VyLmNvbSAtbyBnZXQtZG9ja2VyLnNoCnNoIGdldC1kb2NrZXIuc2gKc3VkbyBkb2NrZXIgcHVsbCBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDp2MQpzdWRvIGRvY2tlciBydW4gLS1ybSBpbnRlZ3JpdHkxMS9teV9ibG9nX2FwcDp2MQoKCg=="}' \
-            --source-version 1 \
+            --launch-template-name template-flask \
+            --launch-template-data '{"UserData":"I2Nsb3VkLWJvb3Rob29rCiMhL2Jpbi9iYXNoCmVjaG8gIkRvY2tlciBpcyBub3QgaW5zdGFsbGVkLiBJbnN0YWxsaW5nLi4uIgphcHQgdXBkYXRlICYmIGFwdCB1cGdyYWRlCmN1cmwgLWZzU0wgaHR0cHM6Ly9nZXQuZG9ja2VyLmNvbSAtbyBnZXQtZG9ja2VyLnNoCnNoIGdldC1kb2NrZXIuc2gKc3VkbyBkb2NrZXIgcnVuIC1kIC1wIDgwOjgwICBpbnRlZ3JpdHkxMS9teV9mbGFza19hcHA6djMKCgo="}' \
+            --source-version 2 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
           # Update the ASG to use the new Launch Template version
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name $ASG_NAME \
             --desired-capacity 2 \
-            --launch-template "LaunchTemplateName=web_app_template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
+            --launch-template "LaunchTemplateName=template-flask,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
   
 
 
