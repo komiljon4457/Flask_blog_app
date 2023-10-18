@@ -78,11 +78,11 @@ jobs:
             --launch-template "LaunchTemplateName=flask-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
 
           # Instance refresh 
-          aws autoscaling start-instance-refresh \
-           --auto-scaling-group-name flask-asg1 \
-           —-preferences "MinHealthyPercentage"=50,"InstanceWarmup"=60 \
-           --strategy "Rolling" \
-           --desired-configuration "LaunchTemplateName=LaunchTemplateName, Version=$Latest"
+          # aws autoscaling start-instance-refresh \
+          #  --auto-scaling-group-name flask-asg1 \
+          #  —-preferences "MinHealthyPercentage"=50,"InstanceWarmup"=60 \
+          #  --strategy "Rolling" \
+          #  --desired-configuration "LaunchTemplateName=LaunchTemplateName, Version=$Latest"
 
   
 
