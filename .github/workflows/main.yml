@@ -78,7 +78,7 @@ jobs:
             --launch-template "LaunchTemplateName=flask-app-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
 
           # Instance refresh 
-          aws autoscaling start-instance-refresh --auto-scaling-group-name flask-asg1  —preferences MinHealthyPercentage=80,InstanceWarmup=300
+          aws autoscaling start-instance-refresh --auto-scaling-group-name flask-asg1  —-preferences MinHealthyPercentage=80,InstanceWarmup=300
 
   
 
