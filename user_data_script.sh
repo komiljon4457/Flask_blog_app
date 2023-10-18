@@ -1,9 +1,9 @@
 #!/bin/bash
 echo "Docker is not installed. Installing..."
-yum update -y
-yum install docker
-service docker start
-usermod -a -G docker ec2-user
-sudo docker run -d -p 80:80  integrity11/my_flask_app:v3
+sudo yum update -y
+sudo yum install docker
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+sudo docker run -d -p 80:5000  integrity11/blog_app_v2:latest
 
 
