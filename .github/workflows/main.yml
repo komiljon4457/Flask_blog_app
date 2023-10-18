@@ -68,7 +68,7 @@ jobs:
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
             --launch-template-name flask-template \
-            --launch-template-data '{"IyEvYmluL2Jhc2gKZWNobyAiRG9ja2VyIGlzIG5vdCBpbnN0YWxsZWQuIEluc3RhbGxpbmcuLi4iCnN1ZG8geXVtIHVwZGF0ZSAteQpzdWRvIHl1bSBpbnN0YWxsIGRvY2tlcgpzdWRvIHNlcnZpY2UgZG9ja2VyIHN0YXJ0CnN1ZG8gdXNlcm1vZCAtYSAtRyBkb2NrZXIgZWMyLXVzZXIKc3VkbyBkb2NrZXIgcnVuIC1kIC1wIDgwOjUwMDAgIGludGVncml0eTExL2Jsb2dfYXBwX3YyOmxhdGVzdAoKCg=="}' \
+            --launch-template-data '{"UserData":"IyEvYmluL2Jhc2gKZWNobyAiRG9ja2VyIGlzIG5vdCBpbnN0YWxsZWQuIEluc3RhbGxpbmcuLi4iCnN1ZG8geXVtIHVwZGF0ZSAteQpzdWRvIHl1bSBpbnN0YWxsIGRvY2tlcgpzdWRvIHNlcnZpY2UgZG9ja2VyIHN0YXJ0CnN1ZG8gdXNlcm1vZCAtYSAtRyBkb2NrZXIgZWMyLXVzZXIKc3VkbyBkb2NrZXIgcnVuIC1kIC1wIDgwOjUwMDAgIGludGVncml0eTExL2Jsb2dfYXBwX3YyOmxhdGVzdAoKCg=="}' \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
