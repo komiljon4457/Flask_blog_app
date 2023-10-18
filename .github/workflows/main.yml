@@ -75,10 +75,14 @@ jobs:
           # Update the ASG to use the new Launch Template version
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name flask-asg1 \
-            --launch-template "LaunchTemplateName=flask-app-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
+            --launch-template "LaunchTemplateName=flask-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
 
           # Instance refresh 
-          aws autoscaling start-instance-refresh --auto-scaling-group-name flask-asg1  —-preferences MinHealthyPercentage=80,InstanceWarmup=300
+          aws autoscaling start-instance-refresh \
+           --auto-scaling-group-name flask-asg1 \
+           —-preferences "MinHealthyPercentage"=50,"InstanceWarmup"=60 \
+           --strategy "Rolling" \
+           --desired-configuration "LaunchTemplateName=LaunchTemplateName, Version=$Latest"
 
   
 
