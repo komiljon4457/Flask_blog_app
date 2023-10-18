@@ -82,7 +82,7 @@ jobs:
             --auto-scaling-group-name flask-asg1 \
             --preferences "MinHealthyPercentage=50,InstanceWarmup=60" \
             --strategy "Rolling" \
-            --desired-configuration "LaunchTemplate={LaunchTemplateName=flask-asg1,Version=$NEW_LAUNCH_TEMPLATE_VERSION}"
+            --desired-configuration "LaunchTemplate={LaunchTemplateName=flask-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION}"
 
 
   
