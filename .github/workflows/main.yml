@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - develop
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -42,9 +43,39 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB }}/blog_app_v2:${{ github.sha }}
+      -    
+        name: Build and push with latest
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB }}/blog_app_v2:latest
 
-  deploy:
-    name: Deploy 
+  deploy-dev:
+    name: Deploy To Dev
+    if: github.ref == 'refs/heads/develop'
+    needs: build 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v3  
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+
+            docker rm -f $(docker ps -a -q)
+            docker run -d -p 80:5000  integrity11/blog_app_v2:latest
+    
+
+  deploy-prod:
+    name: Deploy To Prod
+    if: github.ref == 'refs/heads/main'
     needs: build 
     runs-on: ubuntu-latest
     steps:
@@ -65,24 +96,26 @@ jobs:
           echo "---- BEGIN SCALING ---------"
           echo "ASG_NAME = "flask-asg2" "
           echo "DOCKER_HUB_REPO = "integrity11/my_blog_app" "
-          echo "LAUNCH_TEMPLATE = "flask-templat2" "
+          echo "LAUNCH_TEMPLATE = "flask-template2" "
           echo "TAG = "${{ github.sha }}" "
-           echo "Working Directory: $(pwd)"
+
+          echo "Start encode user data script and run"
           sed "s/latest/$GITHUB_SHA/" ./user_data_script.sh > updated_user_data.sh
           encoded_userdata=$(base64 -w 0 updated_user_data.sh)
-          # Create a new version of the Launch Template with the updated image
+
+          echo "Create New Launch template version"
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
             --launch-template-name flask-template2 \
             --launch-template-data "{\"UserData\": \"$encoded_userdata\"}" \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
-          # Update the ASG to use the new Launch Template version
+          echo "Create New Launch template version"
           aws autoscaling update-auto-scaling-group \
             --auto-scaling-group-name flask-asg2 \
             --launch-template "LaunchTemplateName=flask-template2,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
 
-           # Instance refresh 
+          echo "Refresh the instance"
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name flask-asg2 \
             --preferences "MinHealthyPercentage=50,InstanceWarmup=60" \
