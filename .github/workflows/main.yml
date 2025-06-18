@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - user_data_script.sh
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
