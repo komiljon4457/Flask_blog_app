@@ -63,31 +63,31 @@ jobs:
       - name: Update Auto Scaling Group with Launch Template
         run: |
           echo "---- BEGIN SCALING ---------"
-          echo "ASG_NAME = "flask-asg1" "
+          echo "ASG_NAME = "flask-asg2" "
           echo "DOCKER_HUB_REPO = "integrity11/my_blog_app" "
-          echo "LAUNCH_TEMPLATE = "flask-template" "
+          echo "LAUNCH_TEMPLATE = "flask-templat2" "
           echo "TAG = "${{ github.sha }}" "
           GITHUB_SHA = ${{ github.sha }}
           sed "s/latest/$GITHUB_SHA/" user_data_script.sh > updated_user_data.sh
           encoded_userdata=$(base64 -w 0 updated_user_data_script.sh)
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
-            --launch-template-name flask-template \
+            --launch-template-name flask-template2 \
             --launch-template-data "{\"UserData\": \"$encoded_userdata\"}" \
             --source-version 1 \
             --query "LaunchTemplateVersion.VersionNumber" --output text)
 
           # Update the ASG to use the new Launch Template version
           aws autoscaling update-auto-scaling-group \
-            --auto-scaling-group-name flask-asg1 \
-            --launch-template "LaunchTemplateName=flask-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
+            --auto-scaling-group-name flask-asg2 \
+            --launch-template "LaunchTemplateName=flask-template2,Version=$NEW_LAUNCH_TEMPLATE_VERSION"
 
            # Instance refresh 
           aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name flask-asg1 \
+            --auto-scaling-group-name flask-asg2 \
             --preferences "MinHealthyPercentage=50,InstanceWarmup=60" \
             --strategy "Rolling" \
-            --desired-configuration "LaunchTemplate={LaunchTemplateName=flask-template,Version=$NEW_LAUNCH_TEMPLATE_VERSION}"
+            --desired-configuration "LaunchTemplate={LaunchTemplateName=flask-template2,Version=$NEW_LAUNCH_TEMPLATE_VERSION}"
 
 
   
