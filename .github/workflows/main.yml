@@ -67,7 +67,8 @@ jobs:
           echo "DOCKER_HUB_REPO = "integrity11/my_blog_app" "
           echo "LAUNCH_TEMPLATE = "flask-templat2" "
           echo "TAG = "${{ github.sha }}" "
-          sed "s/latest/$GITHUB_SHA/" user_data_script.sh > updated_user_data.sh
+           echo "Working Directory: $(pwd)"
+          sed "s/latest/$GITHUB_SHA/" ./user_data_script.sh > updated_user_data.sh
           encoded_userdata=$(base64 -w 0 updated_user_data_script.sh)
           # Create a new version of the Launch Template with the updated image
           NEW_LAUNCH_TEMPLATE_VERSION=$(aws ec2 create-launch-template-version \
