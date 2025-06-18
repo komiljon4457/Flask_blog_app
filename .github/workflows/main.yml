@@ -61,13 +61,14 @@ jobs:
           aws-region: us-east-1
     
       - name: Update Auto Scaling Group with Launch Template
+        env:
+          GITHUB_SHA: ${{ github.sha }}
         run: |
           echo "---- BEGIN SCALING ---------"
           echo "ASG_NAME = "flask-asg2" "
           echo "DOCKER_HUB_REPO = "integrity11/my_blog_app" "
           echo "LAUNCH_TEMPLATE = "flask-templat2" "
           echo "TAG = "${{ github.sha }}" "
-          GITHUB_SHA = ${{ github.sha }}
           sed "s/latest/$GITHUB_SHA/" user_data_script.sh > updated_user_data.sh
           encoded_userdata=$(base64 -w 0 updated_user_data_script.sh)
           # Create a new version of the Launch Template with the updated image
