@@ -126,7 +126,7 @@ jobs:
           echo "Refresh the instance"
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name flask-asg2 \
-            --preferences "MinHealthyPercentage=50,InstanceWarmup=60" \
+            --preferences "{"MinHealthyPercentage":90,"InstanceWarmup":300,"AutoRollback":{"Enabled":true}}"
             --strategy "Rolling" \
             --desired-configuration "LaunchTemplate={LaunchTemplateName=flask-template2,Version=$NEW_LAUNCH_TEMPLATE_VERSION}"
 
